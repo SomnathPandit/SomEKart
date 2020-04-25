@@ -1,7 +1,7 @@
 ﻿@model ShoppingCartViewModel
 
 <h2>Your shopping cart</h2>
-<h4>Here are your items that are chosen by you</h4>
+<h4>Here are items that chosen by you</h4>
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
@@ -9,16 +9,19 @@
             <th>Selected Quantity</th>
             <th class="text-right">Price</th>
             <th class="text-right">SubTotal</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach(var line in Model.ShoppingCartItems)
-        {
+        {                    
+            CultureInfo ci = CultureInfo.GetCultureInfo("en-IN");
             <tr>
                 <td class="text-left">@line.ItemName</td>
                 <td class="text-center">@line.Quantity</td>
-                <td class="text-right">@line.Price.ToString("c")</td>
-                <td class="text-right">@line.Amount.ToString("c")</td>
+                <td class="text-right">@line.Price.ToString("c", ci)</td>
+                <td class="text-right">@line.Amount.ToString("c", ci)</td>
+                <td class="btn btn-primary">Remove</td>
             </tr>
         }
     </tbody>
@@ -26,8 +29,16 @@
         <tr>
             <td colspan="3" class="text-right">Total:</td>
             <td class="text-right">
-                @Model.TotalAmount.ToString("c")
+                @{
+                    CultureInfo ci1 = CultureInfo.GetCultureInfo("en-IN");
+                    Model.TotalAmount.ToString("c", ci1);
+                }
             </td>
         </tr>
     </tfoot>
+
 </table>
+<br />
+<div class="text-left row">
+    <a class="btn btn-primary" asp-controller="Order" asp-action="Checkout">Check out</a>
+</div>

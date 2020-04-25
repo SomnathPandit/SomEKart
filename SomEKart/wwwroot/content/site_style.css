@@ -112,3 +112,9 @@ footer {
     text-align:left;
     font-size:large;
 }
+
+.error_content {
+    text-align: left;
+    font-size: large;
+    color: red;
+}

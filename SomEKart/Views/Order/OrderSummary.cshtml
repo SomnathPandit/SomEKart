@@ -1,0 +1,11 @@
+﻿
+@model Order
+    <div>
+        <h4>Your order is placed successfully!</h4>
+        <br/>
+        @foreach (var item in @Model.OrderItems)
+        {
+            <h5>Order Item: @item.ItemName</h5>
+            <br/>
+        }
+    </div>

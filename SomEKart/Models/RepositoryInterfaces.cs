@@ -15,6 +15,7 @@ namespace SomEKart.Models
     {
         IEnumerable<Order> GetAllOrders();
         Order GetOrder(int orderId);
+        void CreateOrder(Order order);
     }
 
     public interface IBillingRepository
@@ -35,6 +36,7 @@ namespace SomEKart.Models
         ShoppingCartItem GetCartItem(int ItemId);
         void AddItemToCart(Item item);
         void RemoveItemFromCart(Item item);
+        void RemoveShoppingCartItemFromCart(ShoppingCartItem cartItem);
         void ClearCart();
     }
 }

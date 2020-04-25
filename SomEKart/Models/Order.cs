@@ -5,7 +5,9 @@ namespace SomEKart.Models
 {
     public class OrderItem : BaseModel
     {
+        public int OrderId { get; set; }
         public int ItemId { get; set; }
+        public string ItemName { get; set; }
         public int Quantity { get; set; }
         public bool IsDelivered { get; set; }
     }
@@ -16,4 +18,5 @@ namespace SomEKart.Models
         public DateTime OrderDate { get; set; }
         public string OrderAcceptedBy { get; set; }
     }
+
 }

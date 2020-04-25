@@ -1,14 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using log4net;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace SomEKart.Models
 {
     public class InventoryRepository : IInventoryRepository
     {
+        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         AppDbContext _context;
         public InventoryRepository(AppDbContext context)
         {
@@ -17,7 +21,15 @@ namespace SomEKart.Models
 
         public IEnumerable<Item> GetAllItems()
         {
-            return _context.Inventories.ToList();
+            try
+            {
+                return _context.Inventories.ToList();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+                return new List<Item>();
+            }
         }
 
         public Item GetItem(int itemId, out int AvailableQty)
@@ -77,14 +89,18 @@ namespace SomEKart.Models
         public void RemoveItemFromCart(Item item)
         {
             var cartItem = _context.ShoppingCartItems.FirstOrDefault(a => a.ItemId == item.Id && a.ShoppingCartId == ShoppingCartId);
+            RemoveShoppingCartItemFromCart(cartItem);
+        }
+
+        public void RemoveShoppingCartItemFromCart(ShoppingCartItem cartItem)
+        {
             if (cartItem != null)
             {
                 _context.ShoppingCartItems.Remove(cartItem);
             }
-
             _context.SaveChanges();
         }
-        
+
         public void ClearCart()
         {
             var itemRange = _context.ShoppingCartItems.Where(c => c.ShoppingCartId == ShoppingCartId);
@@ -102,6 +118,51 @@ namespace SomEKart.Models
             return _context.ShoppingCartItems.FirstOrDefault(a => a.ItemId == itemId && a.ShoppingCartId == ShoppingCartId);
         }
 
+    }
+
+    public class OrderRepository : IOrderRepository
+    {
+        AppDbContext _context;
+        IShoppingCartRepository _cartRepository;
+
+        public OrderRepository(AppDbContext context, IShoppingCartRepository cartRepository)
+        {
+            _context = context;
+            _cartRepository = cartRepository;
+        }
+
+        public void CreateOrder(Order order)
+        {
+            DateTime dtNow = DateTime.Now;
+            _context.Orders.Add(order);
+
+            order.OrderDate = dtNow;
+            if (order.OrderItems == null)
+                order.OrderItems = new List<OrderItem>();
+
+            var items = _cartRepository.GetAllCartItems();
+            foreach(var item in items)
+            {
+                var oi = new OrderItem() { ItemId = item.ItemId, ItemName=item.ItemName, OrderId = order.Id, Quantity = item.Quantity };
+                order.OrderItems.Add(oi);
+                _context.OrderItems.Add(oi);
+                _cartRepository.RemoveShoppingCartItemFromCart(item);
+            }
+
+            _context.SaveChanges();
+        }
+
+        public IEnumerable<Order> GetAllOrders()
+        {
+            return _context.Orders.ToList();
+        }
+
+        public Order GetOrder(int orderId)
+        {
+            var order = _context.Orders.FirstOrDefault(a => a.Id == orderId);
+            order.OrderItems = _context.OrderItems.Where(a => a.OrderId == orderId).ToList();
+            return order;
+        }
     }
 }
  

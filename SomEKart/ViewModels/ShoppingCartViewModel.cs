@@ -23,5 +23,6 @@ namespace SomEKart.ViewModels
                 return ShoppingCartItems.Sum(a => a.Quantity);
             }
         }
+
     }
 }

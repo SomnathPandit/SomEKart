@@ -1,0 +1,62 @@
+﻿
+@model OrderViewModel
+
+    <div>
+        <h3 >Order Summary</h3>
+
+        @foreach (var item in @Model.Order.OrderItems)
+        {
+            <h4 style="padding-left:10px">Item: @item.ItemName, Quantity: @item.Quantity</h4>
+            <br />
+        }
+        
+        <h4>Expected delivery date:<h4 style="color:blue"> @DateTime.Now.AddDays(3).ToShortDateString()</h4></h4>
+        <br />
+        <h3>Delivery Address:</h3>
+
+        <div style="padding-left:10px">
+            <div class="row">
+                <h4 class="col-md-3">Customer Name: </h4> <h4 style="color:blue">@Model.BillingDetails.CustName</h4>
+            </div>
+            <div class="row">
+                <h4 class="col-md-3">Customer Add 1: </h4> <h4 style="color:blue">@Model.BillingDetails.CustAddress1</h4>
+            </div>
+            <div class="row">
+                <h4 class="col-md-3">Customer Add 2: </h4> <h4 style="color:blue">@Model.BillingDetails.CustAddress2</h4>
+            </div>
+            <div class="row">
+                <h4 class="col-md-3">State: </h4> <h4 style="color:blue">@Model.BillingDetails.State</h4>
+            </div>
+            <div class="row">
+                <h4 class="col-md-3">Country: </h4> <h4 style="color:blue">@Model.BillingDetails.Country</h4>
+            </div>
+            <div class="row">
+                <h4 class="col-md-3">Zip Code: </h4> <h4 style="color:blue">@Model.BillingDetails.ZipCode</h4>
+            </div>
+            <div class="row">
+                <h4 class="col-md-3">Phone: </h4> <h4 style="color:blue">@Model.BillingDetails.Phone</h4>
+            </div>
+        </div>
+        <br />
+        <br />
+
+        <h3>Please select payment method</h3>
+        <div class="dropdown form-group">
+            <select id="paymentmethod" class="form-control" style="width:200px">
+                <option value="">-- Select --</option>
+                <option value="CoD">Cash On Delivery</option>
+                <option value="CC">Credit Card</option>
+                <option value="NB">Net Banking</option>
+            </select>
+            </div>
+        </div>
+
+        <br />
+
+        <div>
+            <a class="btn btn-primary"
+               asp-controller="Order"
+               asp-action="OrderSummary"
+               asp-route-orderid="@Model.Order.Id">Make Payment</a>
+        </div>
+    </div>

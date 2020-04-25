@@ -1,15 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using log4net;
+using Microsoft.AspNetCore.Mvc;
 using SomEKart.Models;
 using SomEKart.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace SomEKart.Controllers
 {
     public class ShoppingCartController : Controller
     {
+        private static readonly ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         private readonly IShoppingCartRepository _shoppingCartRepository;
         private readonly IInventoryRepository _inventoryRepository;
 

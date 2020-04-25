@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SomEKart.Auth;
 using SomEKart.Models;
 
 namespace SomEKart.Controllers
@@ -12,14 +14,17 @@ namespace SomEKart.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, SignInManager<ApplicationUser> signInManager)
         {
             _logger = logger;
+            _signInManager = signInManager;
         }
 
         public IActionResult Index()
         {
+            //_signInManager.IsSignedIn();
             return View();
         }
 
